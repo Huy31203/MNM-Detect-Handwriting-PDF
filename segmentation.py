@@ -3,7 +3,7 @@ import numpy as np
 import pytesseract
 import re
 
-pytesseract.pytesseract.tesseract_cmd = r'D:\Code\VS Code\MNM\Python-Detect-HandWriting-PDF-main\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'.\Tesseract-OCR\tesseract.exe'
 PATTERN = "[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789]"#delete 'cause it's too long, cannot capture, it a-z
 
 def ImgHasText(image):
