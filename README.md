@@ -2,7 +2,7 @@
 
 Đồ án nhận dạng chữ viết tay là một ứng dụng winform được viết dựa trên ngôn ngữ Python kết hợp với các thư viện như PyQt5, OpenCV, VietOCR, Tesseract, v.v....
 
-## Các tính năng của ứng dụng
+## 📌 Các tính năng của ứng dụng
 
 - Người dùng có thể upload ảnh và thực hiện chuyển đổi từ một hình ảnh có nội dung chữ viết tay bên trong
 - Người dùng có thể đưa đường dẫn hình ảnh và thực hiện chuyển đổi từ một hình ảnh có nội dung chữ viết tay bên trong
@@ -10,7 +10,7 @@
 - Người dùng có thể chỉnh sửa lại nội dung sau khi ứng dụng hoàn tất quá trình nhận dạng chữ viết tay trong hình ảnh
 - Người dùng có thể xuất nội dung sau khi ứng dụng hoàn tất quá trình nhận dạng ra file PDF
 
-## Các thông tin thêm về thư viện được sử dụng trong ứng dụng
+## 📌 Các thông tin thêm về thư viện được sử dụng trong ứng dụng
 
 - [Python]: (v3.10) - Python là một ngôn ngữ lập trình thông dịch, được sử dụng phổ biến cho nhiều mục đích khác nhau từ phát triển web đến trí tuệ nhân tạo.
 - [OpenCV]: (v4.8.1.78) - OpenCV là một thư viện mã nguồn mở về thị giác máy tính và xử lý hình ảnh, cung cấp các công cụ mạnh mẽ cho việc xử lý và phân tích ảnh số.
@@ -20,11 +20,11 @@
 - [VietOCR] (v0.3.11) - VietOCR là một thư viện Python cho nhận diện ký tự tiếng Việt từ hình ảnh, dựa trên Tesseract OCR Engine.
 - [Pyenchant] (v3.2.2) - Pyenchant là một giao diện Python cho Enchant, một thư viện kiểm tra chính tả mã nguồn mở, hỗ trợ nhiều ngôn ngữ và từ điển.
 
-## Tập dữ liệu model cho việc train
+## 📌 Tập dữ liệu model cho việc train
 
 - Với hơn 400,000 file ảnh và label cho việc train dữ liệu bằng Google Colab trong 3 tiếng với độ chính xác từ 60% đến 90% tùy thuộc vào ảnh đầu vào có chất lượng cao hay thấp
 
-## Installation
+## 📌 Installation
 
 - Cài đặt Python v3.10
 - Cài đặt các thư viện theo file requirements (có thể xảy ra lỗi do một vài thư viện nâng cấp lên version mới có thể bị xung đột): `pip install -r requirements.txt`
