@@ -215,7 +215,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     
     def DownloadImage(self):
-        url, ok = QtWidgets.QInputDialog.getText(self.mainWindow, "Download Image", "Enter the image URL:")
+        url, ok = QtWidgets.QInputDialog.getText(self.mainWindow, "Download Image", "Nhập đường dẫn hình ảnh:")
         if ok:
             try:
                 response = requests.get(url)

@@ -22,20 +22,18 @@ def convertToString(segments, language = "vi_VN"):
         # chuyển đổi ảnh đen trắng để dự đoán (vì dễ đọc)
         segment_pil = Image.fromarray(cv2.cvtColor(segment, cv2.COLOR_BGR2RGB))
         segment_pil_gray = segment_pil.convert('L')
+
         text = detector.predict(segment_pil_gray)
         result += " " + text
     
     # dùng thư viện enchant để chỉnh sửa chính tả
-    
     vi_dict = enchant.Dict(language)
     chkr = SpellChecker(vi_dict)
-    # Set the text to be checked
     chkr.set_text(result)
 
-    # Iterate over misspelled words and suggest replacements
+    
     for err in chkr:
         sug = err.suggest()
-        print(sug)
         if sug:
             err.replace(sug[0])
             result = chkr.get_text()
