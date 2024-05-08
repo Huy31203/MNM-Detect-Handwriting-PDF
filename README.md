@@ -1,4 +1,4 @@
-# Python-Detect-HandWriting-PDF
+# Detect HandWriting and Convert to PDF
 
 # Install Package
 pip install pillow (sử dụng cho việc mở file)
