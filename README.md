@@ -1,5 +1,4 @@
 # Detect HandWriting and Convert to PDF
-=======
 # Nhận dạng chữ viết tay (Detect Handwriting)
 
 Đồ án nhận dạng chữ viết tay là một ứng dụng winform được viết dựa trên ngôn ngữ Python kết hợp với các thư viện như PyQt5, OpenCV, VietOCR, Tesseract, v.v....
