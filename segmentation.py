@@ -48,19 +48,19 @@ def line_segmentation(img):
 
     thresh_img = thresholding(img)
 
-    # Áp dụng phép chập dilate để tăng độ dày của vật thể
+    # Tăng độ dày để của chữ dựa trên màu trắng đen để dễ dàng khoanh vùng
     kernel = np.ones((20, 150), np.uint8)
     dilated = cv2.dilate(thresh_img, kernel, iterations = 1)
     
-    # Tìm các đường viền
+    # Tìm các đoạn đã khoanh vùng
     (contours, heirachy) = cv2.findContours(dilated.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_KCOS)
 
-    # Sắp xếp các đường viền theo chiều dọc
+    # Sắp xếp các đoạn theo chiều dọc
     sorted_contours_lines = sorted(contours, key = lambda ctr : cv2.boundingRect(ctr)[1])
     img2 = img.copy()
 
     segments = []
-    # Duyệt qua các đường viền đã sắp xếp
+    # Duyệt qua các đoạn đã sắp xếp
     for ctr in sorted_contours_lines:
         x, y, w, h = cv2.boundingRect(ctr)
         segment = img2[y:y+h, x:x+w]
