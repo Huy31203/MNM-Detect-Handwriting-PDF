@@ -40,7 +40,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.imageChoose)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.imageCapture = QtWidgets.QPushButton(self.horizontalFrame, clicked = lambda: self.TakeImage())
+        self.imageCapture = QtWidgets.QPushButton(self.horizontalFrame, clicked = lambda: self.TakeImage()) # type: ignore
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -51,13 +51,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.imageCapture)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
-        self.downloadButton = QtWidgets.QPushButton(self.horizontalFrame, clicked=lambda: self.DownloadImage())
+        self.downloadButton = QtWidgets.QPushButton(self.horizontalFrame, clicked=lambda: self.DownloadImage()) # type: ignore
         self.downloadButton.setMinimumSize(QtCore.QSize(100, 30))
         self.downloadButton.setObjectName("downloadButton")
         self.horizontalLayout.addWidget(self.downloadButton)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
-        self.imageCrop = QtWidgets.QPushButton(self.horizontalFrame, clicked = lambda: self.open_crop_window(MainWindow))
+        self.imageCrop = QtWidgets.QPushButton(self.horizontalFrame, clicked = lambda: self.open_crop_window(MainWindow)) # type: ignore
         self.imageCrop.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Policy.Preferred,  QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -96,7 +96,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.language)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem5)
-        self.begin = QtWidgets.QPushButton(self.horizontalFrame, clicked = lambda: self.open_convert_window())
+        self.begin = QtWidgets.QPushButton(self.horizontalFrame, clicked = lambda: self.open_convert_window()) # type: ignore
         self.begin.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Policy.Preferred,  QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -215,76 +215,90 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     
     def DownloadImage(self):
+        # Hiển thị hộp thoại để nhập URL của hình ảnh cần tải
         url, ok = QtWidgets.QInputDialog.getText(self.mainWindow, "Download Image", "Nhập đường dẫn hình ảnh:")
         if ok:
             try:
+                # Thử tải hình ảnh từ URL
                 response = requests.get(url)
-                response.raise_for_status()  # Raise an HTTPError for bad responses
+                response.raise_for_status()  # Nếu có lỗi, ném ra ngoại lệ
             except requests.RequestException as e:
+                # Hiển thị thông báo lỗi nếu không tải được hình
                 QtWidgets.QMessageBox.warning(self.mainWindow, "Error", f"Tải hình ảnh thất bại: {str(e)}")
                 return
             
+            # Kiểm tra nếu mã trạng thái HTTP là 200 (thành công)
             if response.status_code == 200:
+                # Lấy kiểu nội dung của phản hồi, kiểm tra nếu là hình ảnh
                 content_type = response.headers.get('Content-Type')
-                if 'image' in content_type:
+                if 'image' in content_type: # type: ignore
                     img_data = response.content
                     filename = 'temp/temp.jpg'
                     with open(filename, 'wb') as f:
                         f.write(img_data)
+                        # Tạo QPixmap từ file vừa tải
                         self.pixmap = QPixmap(filename)
+                        # Đọc hình ảnh sử dụng OpenCV
                         self.cv2_image = cv2.imread(filename)
                         self.cv2_image_tmp = self.cv2_image
+                        # Cập nhật hình ảnh lên giao diện
                         self.setImage()
                         self.filename = filename
+                        # Kích hoạt các thanh trượt và nút nhấn
                         self.brightnessSlider.setEnabled(True)
                         self.sharpnessSlider.setEnabled(True)
                         self.contrastSlider.setEnabled(True)
                         self.begin.setEnabled(True)
                         self.imageCrop.setEnabled(True)
-                        self.preBright = 0
-                        self.preSharp = 0
-                        self.preContrast = 0
+                        # Đặt giá trị ban đầu cho các thanh trượt
                         self.brightnessSlider.setValue(0)
                         self.sharpnessSlider.setValue(0)
                         self.contrastSlider.setValue(0)
-                        
+
     def setImage(self):
+        # Kiểm tra chiều rộng của pixmap để xác định cách hiển thị
         if self.pixmap.width() <= 460:
+            # Nếu chiều rộng nhỏ hơn hoặc bằng 445, hiển thị pixmap gốc
             if self.pixmap.width() <= 445:
                 self.imageContainer.setPixmap(self.pixmap)
+            # Nếu chiều rộng lớn hơn 445 nhưng nhỏ hơn 460, thu nhỏ theo chiều cao 445
             else: 
                 self.imageContainer.setPixmap(self.pixmap.scaled(self.pixmap.width(), 445))
+        # Nếu chiều rộng lớn hơn 460
         else:
+            # Nếu chiều cao nhỏ hơn hoặc bằng 445, thu nhỏ theo chiều rộng 460
             if self.pixmap.height() <= 445:
                 self.imageContainer.setPixmap(self.pixmap.scaled(460, self.pixmap.height()))
+            # Nếu cả chiều rộng và chiều cao lớn hơn 445, thu nhỏ về 460x445
             else:
                 self.imageContainer.setPixmap(self.pixmap.scaled(460, 445))
 
     def openFileDialog(self):
+        # Mở hộp thoại chọn file và lấy đường dẫn của file hình ảnh được chọn
         filename, _ = QFileDialog.getOpenFileName(self.imageChoose, "Chọn hình ảnh", "", "Image Files (*.png *.jpg *.jpeg *.bmp)")
         if filename:
+            # Tạo QPixmap từ file được chọn
             self.pixmap = QPixmap(filename)
+            # Đọc hình ảnh sử dụng OpenCV
             self.cv2_image = cv2.imread(filename)
             self.cv2_image_tmp = self.cv2_image
+            # Cập nhật hình ảnh lên giao diện
             self.setImage()
             self.filename = filename
+            # Kích hoạt các thanh trượt và nút nhấn
             self.brightnessSlider.setEnabled(True)
             self.sharpnessSlider.setEnabled(True)
             self.contrastSlider.setEnabled(True)
             self.begin.setEnabled(True)
             self.imageCrop.setEnabled(True)
-            self.preBright = 0
-            self.preSharp = 0
-            self.preContrast = 0
+            # Đặt giá trị ban đầu cho các thanh trượt
             self.brightnessSlider.setValue(0)
             self.sharpnessSlider.setValue(0)
             self.contrastSlider.setValue(0)
-        
-    def TakeImage(self):
-        # Access the camera
-        cap = cv2.VideoCapture(0)
 
-        # Check if the camera is opened successfully
+    def TakeImage(self):
+        # Khởi tạo camera
+        cap = cv2.VideoCapture(0)
         if not cap.isOpened():
             print("Unable to access camera")
             return
@@ -292,164 +306,225 @@ class Ui_MainWindow(object):
         width = 600
         height = 600
         
-        # Read a frame from the camera
         while True:
             ret, frame = cap.read()
             
+            # Điều chỉnh kích thước khung hình
             frame = cv2.resize(frame, (width, height))
             
-            # Display the captured frame
+            # Hiển thị khung hình trên cửa sổ
             cv2.imshow("Camera", frame)
             
+            # Thoát khi nhấn phím Esc
             if cv2.waitKey(1) == ord('\x1b'): #Esc button
                 cv2.destroyAllWindows()
                 return
             
+            # Chụp ảnh khi nhấn phím Space
             if cv2.waitKey(1) == ord(' '):
                 break
+            # Đóng cửa sổ khi cửa sổ không còn hiển thị
+            if cv2.getWindowProperty("Camera", cv2.WND_PROP_VISIBLE) < 1:
+                cv2.destroyAllWindows()
+                return
+        
         cap.release()
         cv2.destroyAllWindows()
+        # Lưu hình ảnh đã chụp
         self.cv2_image = frame
         self.cv2_image_tmp = frame
         now = datetime.datetime.now()
         filename = 'Images/Capture'+ now.strftime("%Y%m%d%H%M%S") + ".jpg"
         cv2.imwrite(filename, frame)
         self.pixmap = QPixmap(filename)
+        # Cập nhật hình ảnh lên giao diện
         self.setImage()
         self.filename = filename
+        # Kích hoạt các thanh trượt và nút nhấn
         self.brightnessSlider.setEnabled(True)
         self.sharpnessSlider.setEnabled(True)
         self.contrastSlider.setEnabled(True)
         self.begin.setEnabled(True)
         self.imageCrop.setEnabled(True)
-        self.preBright = 0
-        self.preSharp = 0
-        self.preContrast = 0
+        # Đặt giá trị ban đầu cho các thanh trượt
         self.brightnessSlider.setValue(0)
         self.sharpnessSlider.setValue(0)
         self.contrastSlider.setValue(0)
     
     def customize_image(self):
+        # Chuyển đổi hình ảnh từ OpenCV sang Pillow để thực hiện tăng giảm độ sáng
         pillow_image = Image.fromarray(self.cv2_image_tmp)
 
-        # Thực hiện tăng độ sáng
+        # Lấy giá trị từ thanh trượt độ sáng và điều chỉnh độ sáng của hình ảnh
         brightness_value_normalized = self.brightnessSlider.value()
         brightened_image = ImageEnhance.Brightness(pillow_image).enhance((brightness_value_normalized + 100) / 100)
 
-        # Thực hiện tăng độ sắc nét
+        # Lấy giá trị từ thanh trượt độ nét và điều chỉnh độ nét của hình ảnh
         sharpness_value_normalized = self.sharpnessSlider.value()
         image = np.array(brightened_image)
         sharpened_image = cv2.convertScaleAbs(image, alpha=1 + sharpness_value_normalized/100, beta=0)
         
-        # Thực hiện tăng độ tương phản
+        # Lấy giá trị từ thanh trượt độ tương phản và điều chỉnh độ tương phản của hình ảnh
         contrast_value_normalized = self.contrastSlider.value()
         sharpened_image = Image.fromarray(sharpened_image)
         contrastened_image = ImageEnhance.Contrast(sharpened_image).enhance((contrast_value_normalized + 100) / 100)
 
+        # Chuyển đổi hình ảnh cuối cùng trở lại dạng mảng numpy để xử lý tiếp
         image = np.array(contrastened_image)
 
         return image
         
     def update_image_brightness(self):
+        # Tạo hình ảnh đã tùy chỉnh từ các thanh trượt
         image = self.customize_image()
         height, width, channel = image.shape
         bytes_per_line = 3 * width
+        # Chuyển đổi hình ảnh từ RGB sang BGR để hiển thị đúng màu
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         image = np.array(image)
+        # Tạo QImage từ dữ liệu hình ảnh
         q_image = QImage(image.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
-        # Display the QImage using QPixmap
+        # Hiển thị QImage sử dụng QPixmap
         q_pixmap = QPixmap.fromImage(q_image)
         self.cv2_image = image
         self.pixmap = q_pixmap
+        # Cập nhật hình ảnh trên giao diện người dùng
         self.setImage()
             
     def update_image_contrast(self):
+        # Tạo hình ảnh đã tùy chỉnh dựa trên các giá trị từ thanh trượt
         image = self.customize_image()
+        # Lấy kích thước và số kênh màu của hình ảnh
         height, width, channel = image.shape
+        # Tính số byte trên mỗi dòng
         bytes_per_line = 3 * width
+        # Chuyển đổi hình ảnh từ RGB sang BGR để hiển thị đúng màu sắc
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        image = np.array(image)
+        # Chuyển đổi mảng numpy thành QImage
         q_image = QImage(image.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
-        # Display the QImage using QPixmap
+        # Tạo QPixmap từ QImage để hiển thị trên GUI
         q_pixmap = QPixmap.fromImage(q_image)
+        # Cập nhật hình ảnh hiện tại và pixmap để hiển thị
         self.cv2_image = image
         self.pixmap = q_pixmap
+        # Cập nhật hình ảnh trên giao diện người dùng
         self.setImage()
     
     def update_image_sharpness(self):
+        # Tạo hình ảnh đã tùy chỉnh từ các thanh trượt
         image = self.customize_image()
-        
+        # Lấy kích thước và số kênh màu của hình ảnh
         height, width, channel = image.shape
+        # Tính số byte trên mỗi dòng
         bytes_per_line = 3 * width
+        # Chuyển đổi hình ảnh từ RGB sang BGR để hiển thị đúng màu
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        image = np.array(image)
+        # Chuyển đổi mảng numpy thành QImage
         q_image = QImage(image.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
-        # Display the QImage using QPixmap
+        # Tạo QPixmap từ QImage để hiển thị trên GUI
         q_pixmap = QPixmap.fromImage(q_image)
+        # Cập nhật hình ảnh hiện tại và pixmap để hiển thị
         self.cv2_image = image
         self.pixmap = q_pixmap
+        # Cập nhật hình ảnh trên giao diện người dùng
         self.setImage()
     
     def resetParams(self):
+        # Load lại hình ảnh gốc từ đường dẫn lưu trữ
         self.pixmap = QPixmap(self.filename)
+        # Đọc lại hình ảnh gốc sử dụng OpenCV
         self.cv2_image = cv2.imread(self.filename)
-        self.preSharp = 0
-        self.preContrast = 0
+        # Đặt lại giá trị của các thanh trượt về 0
         self.brightnessSlider.setValue(0)
         self.sharpnessSlider.setValue(0)
         self.contrastSlider.setValue(0)
+        # Cập nhật lại hình ảnh trên giao diện người dùng
         self.setImage()
     
     def open_convert_window(self):
+        # Tạo một cửa sổ mới cho việc chuyển đổi hình ảnh
         self.window = QtWidgets.QWidget()
+        
+        # Khởi tạo giao diện người dùng cho cửa sổ chuyển đổi
         self.convertWindow = convertGUI.Ui_Form()
         self.convertWindow.setupUi(self.window)
+        
+        # Chuyển ngôn ngữ hiện tại được chọn sang cửa sổ chuyển đổi
         self.convertWindow.language = self.language.currentIndex()
+        
+        # Hiển thị cửa sổ chuyển đổi
         self.window.show()
+        
+        # Gửi hình ảnh hiện tại đến cửa sổ chuyển đổi để xử lý
         self.convertWindow.Image(self.cv2_image)
         
     def open_crop_window(self, MainWindow):
+        # Tạo một widget mới để hiển thị cửa sổ cắt ảnh
         self.window = QtWidgets.QWidget()
+        
+        # Khởi tạo giao diện người dùng cho cửa sổ cắt ảnh từ module cropGUI
         self.convertWindow = cropGUI.Ui_Form()
         self.convertWindow.setupUi(self.window)
+        
+        # Gửi hình ảnh hiện tại và tên file đến cửa sổ cắt để xử lý
         self.convertWindow.Image(self.cv2_image, self.filename)
+        
+        # Hiển thị cửa sổ cắt ảnh
         self.window.show()
+        
+        # Đóng cửa sổ chính hiện tại
         MainWindow.close()
         
     def receiveImg(self):
+        # Đặt tên file mặc định cho hình ảnh nhận được
         self.filename = 'temp/temp.jpg'
+        
+        # Tạo QPixmap từ file hình ảnh
         self.pixmap = QPixmap(self.filename)
+        
+        # Đọc hình ảnh sử dụng OpenCV
         self.cv2_image = cv2.imread(self.filename)
-        self.cv2_image_tmp = self.cv2_image
+        self.cv2_image_tmp = self.cv2_image  # Lưu trữ hình ảnh tạm thời để xử lý
+        
+        # Cập nhật hình ảnh lên giao diện người dùng
         self.setImage()
+        
+        # Kích hoạt các thanh trượt và nút nhấn
         self.brightnessSlider.setEnabled(True)
         self.sharpnessSlider.setEnabled(True)
         self.contrastSlider.setEnabled(True)
         self.begin.setEnabled(True)
         self.imageCrop.setEnabled(True)
-        self.preBright = 0
-        self.preSharp = 0
-        self.preContrast = 0
+        
+        # Đặt giá trị ban đầu cho các thanh trượt về 0
         self.brightnessSlider.setValue(0)
         self.sharpnessSlider.setValue(0)
         self.contrastSlider.setValue(0)
         
     def reOpenMain(self, filename):
+        # Cập nhật tên file hiện tại
         self.filename = filename
+        
+        # Tạo QPixmap từ file hình ảnh
         self.pixmap = QPixmap(filename)
+        
+        # Đọc hình ảnh sử dụng OpenCV
         self.cv2_image = cv2.imread(filename)
+        
+        # Cập nhật hình ảnh lên giao diện người dùng
         self.setImage()
+        
+        # Kích hoạt các thanh trượt và nút nhấn
         self.brightnessSlider.setEnabled(True)
         self.sharpnessSlider.setEnabled(True)
         self.contrastSlider.setEnabled(True)
         self.begin.setEnabled(True)
         self.imageCrop.setEnabled(True)
-        self.preBright = 0
-        self.preSharp = 0
-        self.preContrast = 0
+        
+        # Đặt giá trị ban đầu cho các thanh trượt về 0
         self.brightnessSlider.setValue(0)
         self.sharpnessSlider.setValue(0)
         self.contrastSlider.setValue(0)

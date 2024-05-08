@@ -24,8 +24,8 @@ def convertToString(segments, language = "vi_VN"):
         segment_pil_gray = segment_pil.convert('L')
 
         text = detector.predict(segment_pil_gray)
-        result += " " + text
-        
+        result += " " + text # type: ignore
+    
     # dùng thư viện enchant để chỉnh sửa chính tả
     vi_dict = enchant.Dict(language)
     chkr = SpellChecker(vi_dict)

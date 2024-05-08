@@ -6,7 +6,7 @@ import segmentation as sg
 def convertToPdf(text, image):
     # Tạo tệp PDF và ghi nội dung văn bản đã chuyển đổi vào tệp đó
     pdf = FPDF()
-    pdf.encoding = 'utf-8'
+    pdf.encoding = 'utf-8'  # type: ignore
     pdf.add_page()
     pdf.add_font('ArialUni', '', r'ArialUni.ttf', uni=True)
     pdf.set_font('ArialUni', '', 15)
