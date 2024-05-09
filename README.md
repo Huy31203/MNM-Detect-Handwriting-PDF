@@ -5,7 +5,7 @@
 
 ## 📌 Các tính năng của ứng dụng
 
-- Người dùng có thể upload ảnh và thực hiện chuyển đổi từ một hình ảnh có nội dung chữ viết tay bên trong
+- Người dùng có thể upload ảnh và thực hiện các chuyển đổi từ một hình ảnh có nội dung chữ viết tay bên trong
 - Người dùng có thể đưa đường dẫn hình ảnh và thực hiện chuyển đổi từ một hình ảnh có nội dung chữ viết tay bên trong
 - Người dùng có thể chỉnh sửa hình ảnh để cho ứng dụng dễ dàng nhận diện hơn như cắt ảnh, tùy chỉnh độ sáng/tối, màu sắc
 - Người dùng có thể chỉnh sửa lại nội dung sau khi ứng dụng hoàn tất quá trình nhận dạng chữ viết tay trong hình ảnh
